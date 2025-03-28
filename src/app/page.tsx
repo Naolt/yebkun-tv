@@ -20,7 +20,7 @@ export default function Home() {
     if (loadingBar === 100) {
       router.push("/login");
     }
-  }, [loadingBar]);
+  }, [loadingBar, router]);
 
   return (
     <section className="flex flex-col items-center justify-center h-screen relative">

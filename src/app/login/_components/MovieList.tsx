@@ -1,7 +1,7 @@
 import React from "react";
 import Image from "next/image";
 
-function MovieList() {
+function MovieList({ openModal }: { openModal: () => void }) {
   // Design Description
   /*
   This section has 3 rows of movie posters. 
@@ -71,6 +71,7 @@ function MovieList() {
           <div
             key={movie.id}
             className="relative  rounded-[15px] overflow-hidden"
+            onClick={openModal}
           >
             <Image
               src={movie.image}
@@ -89,6 +90,7 @@ function MovieList() {
           <div
             key={movie.id}
             className="relative aspect-[380/433] rounded-[15px] overflow-hidden"
+            onClick={openModal}
           >
             <Image
               src={movie.image}
@@ -107,6 +109,7 @@ function MovieList() {
           <div
             key={movie.id}
             className="relative rounded-[15px] overflow-hidden"
+            onClick={openModal}
           >
             <Image
               src={movie.image}
