@@ -1,8 +1,9 @@
 "use client";
+import { Search } from "lucide-react";
 import Image from "next/image";
 import Link from "next/link";
 import { usePathname } from "next/navigation";
-import { useRef } from "react";
+import { useEffect, useRef, useState } from "react";
 
 interface NavigationItemProps {
   href: string;
@@ -10,6 +11,13 @@ interface NavigationItemProps {
   icon: string;
   active?: boolean;
   onClick?: () => void;
+}
+
+interface NavigationProps {
+  onSearchFocus?: () => void;
+  onSearchChange?: (query: string) => void;
+  onSearchSubmit?: () => void;
+  searchQuery?: string;
 }
 
 const NavigationItem = ({
@@ -50,9 +58,42 @@ const NavigationItem = ({
   );
 };
 
-export default function Navigation() {
+export default function Navigation({
+  onSearchFocus,
+  onSearchChange,
+  onSearchSubmit,
+  searchQuery = "",
+}: NavigationProps) {
   const pathname = usePathname();
   const clickSoundRef = useRef<HTMLAudioElement>(null);
+  const [localSearchQuery, setLocalSearchQuery] = useState(searchQuery);
+  const searchInputRef = useRef<HTMLInputElement>(null);
+
+  // Update local state when prop changes
+  useEffect(() => {
+    setLocalSearchQuery(searchQuery);
+  }, [searchQuery]);
+
+  const handleSearchChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+    const newValue = e.target.value;
+    setLocalSearchQuery(newValue);
+    if (onSearchChange) {
+      onSearchChange(newValue);
+    }
+  };
+
+  const handleSearchFocus = () => {
+    if (onSearchFocus) {
+      onSearchFocus();
+    }
+  };
+
+  const handleSearchSubmit = () => {
+    if (onSearchSubmit) {
+      onSearchSubmit();
+    }
+    setLocalSearchQuery("")
+  };
 
   const handleNavClick = () => {
     // Play click sound
@@ -89,24 +130,24 @@ export default function Navigation() {
               onClick={handleNavClick}
             />
             <NavigationItem
-              href="/cinema"
-              label="Cinema"
+              href="/adult/music"
+              label="Mûzîk"
               icon="/images/navigation/muzik.svg"
-              active={pathname === "/cinema"}
+              active={pathname === "/music"}
+              onClick={handleNavClick}
+            />
+            <NavigationItem
+              href="/adult/sinema"
+              label="Sînema"
+              icon="/images/navigation/sinema.svg"
+              active={pathname === "/sinema"}
               onClick={handleNavClick}
             />
             <NavigationItem
               href="/videos"
               label="Videos"
-              icon="/images/navigation/sinema.svg"
-              active={pathname === "/videos"}
-              onClick={handleNavClick}
-            />
-            <NavigationItem
-              href="/shwazi"
-              label="Shwazi"
               icon="/images/navigation/videos.svg"
-              active={pathname === "/shwazi"}
+              active={pathname === "/videos"}
               onClick={handleNavClick}
             />
             <NavigationItem
@@ -117,21 +158,35 @@ export default function Navigation() {
               onClick={handleNavClick}
             />
             <NavigationItem
-              href="/gerandin"
+              href="/adult/gerandin"
               label="Gerandin"
-              icon="images/navigation/gerandin.svg"
-              active={pathname === "/gerandin"}
+              icon="/images/navigation/gerandin.svg"
+              active={pathname === "/adult/gerandin"}
               onClick={handleNavClick}
             />
           </div>
 
           {/* Search Bar with Mic Icon */}
-          <div className="flex items-center space-x-3 bg-white bg-opacity-95 rounded-full px-[10px] py-[10px] w-[30vw] gap-[20px]">
+          <div className="flex items-center space-x-3 bg-[#f2f2f2] rounded-full px-[10px] py-[10px] w-[30vw] gap-[20px]">
             <input
               type="text"
+              ref={searchInputRef}
+              value={localSearchQuery}
+              onChange={handleSearchChange}
+              onFocus={handleSearchFocus}
               placeholder="Search"
-              className="w-full h-[30px] bg-[#FFFFFF] rounded-[52px] font-[genos] font-normal text-[36px] focus:outline-none text-[#000000]/90 px-[25px] py-[10px] border-none"
+              className="w-full h-[30px] bg-[#f2f2f2] rounded-[52px] font-[genos] font-normal text-[36px] focus:outline-none text-[#000000]/90 px-[25px] py-[10px] border-none"
             />
+            <div
+              className={`w-55 h-55 rounded-full flex items-center justify-center text-black p-[7px] cursor-pointer`}
+              style={{
+                background: "white",
+                boxShadow: "0 1px 3px rgba(0,0,0,0.2)",
+              }}
+              onClick={handleSearchSubmit}
+            >
+              <Search className="w-[33px] h-[33px]" />
+            </div>
             <div
               className={`w-55 h-55 rounded-full flex items-center justify-center text-black p-[7px] `}
               style={{

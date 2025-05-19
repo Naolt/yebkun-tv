@@ -57,7 +57,7 @@ function RelatedVideoCard({ id, thumbnail, title }: Video) {
         className="group relative cursor-pointer w-[185px] h-[220px] z-10 flex items-center justify-center"
         onClick={handleClick}
       >
-        <div className="w-full h-full flex items-center justify-center rounded-lg relative transition-all duration-300 ease-in-out transform group-hover:scale-105 group-hover:shadow-xl group-hover:border-2 group-hover:h-[260px] group-hover:border-red-500 group-hover:border-[4px]">
+        <div className="w-full h-full flex items-center justify-center rounded-lg relative transition-all duration-300 ease-in-out transform group-hover:scale-105 group-hover:shadow-xl  group-hover:h-[260px] group-hover:border-red-500 group-hover:border-[4px]">
           <Image
             src={thumbnail}
             alt={title}
@@ -89,7 +89,7 @@ function RelatedStoryCard({ id, thumbnail, title,  }: Video) {
       className="group relative cursor-pointer w-[220px] h-[180px] z-10 flex items-center justify-center"
       onClick={handleClick}
     >
-      <div className="w-full h-full flex items-center justify-center rounded-lg relative transition-all duration-300 ease-in-out transform group-hover:scale-105 group-hover:shadow-xl group-hover:border-2 group-hover:h-[200px] group-hover:border-red-500 group-hover:border-[4px]">
+      <div className="w-full h-full flex items-center justify-center rounded-lg relative transition-all duration-300 ease-in-out transform group-hover:scale-105 group-hover:shadow-xl group-hover:h-[200px] group-hover:border-red-500 group-hover:border-[4px]">
         <Image
           src={thumbnail}
           alt={title}
@@ -337,7 +337,7 @@ function VideoScreen({
       </div>
 
       {videoType === "series" && (
-        <div className="absolute bottom-0 h-[26%] w-[98%] bottom-[10px] z-30 p-6 bg-[rgba(255,255,255,0.1)] backdrop-blur-md flex flex-col items-start justify-start">
+        <div className="absolute h-[26%] w-[98%] bottom-[10px] z-30 p-6 bg-[rgba(255,255,255,0.1)] backdrop-blur-md flex flex-col items-start justify-start">
           <div className="flex gap-4">
             {Array.from({ length: numberOfSeasons }, (_, i) => (
               <button
@@ -358,7 +358,7 @@ function VideoScreen({
           </div>
 
           <div className="mt-2 flex flex-col items-center gap-4">
-            <div className="flex flex-row items-center gap-4 w-full items-center justify-center w-full">
+            <div className="flex flex-row gap-4 items-center justify-center w-full">
               <button
                 disabled={currentPage === 0}
                 onClick={() => setCurrentPage((prev) => Math.max(prev - 1, 0))}
@@ -460,7 +460,7 @@ function VideoScreen({
       {(videoType === "movie" || videoType === "story") &&
         relatedVideos &&
         relatedVideos.length > 0 && (
-          <div className="absolute bottom-0 w-[98%] h-[24%] bottom-[10px] z-30 bg-[rgba(250,250,250,0.1)] backdrop-blur-md flex items-center justify-center">
+          <div className="absolute  w-[98%] h-[24%] bottom-[10px] z-30 bg-[rgba(250,250,250,0.1)] backdrop-blur-md flex items-center justify-center">
             <div className="flex flex-col items-center gap-4">
               <div className="flex flex-row items-center gap-4 w-full">
                 <button
