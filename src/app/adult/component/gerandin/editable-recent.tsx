@@ -1,7 +1,6 @@
 "use client";
 
-import { Trash2, Clock, History, Edit } from "lucide-react";
-import { useState } from "react";
+import {History, Edit } from "lucide-react";
 import { cn } from "@/lib/utils";
 
 type RecentSearchesProps = {
@@ -15,7 +14,7 @@ export default function EditableRecentSearches({
   onSearchClick,
   isActive,
 }: RecentSearchesProps) {
-  const [focusedIndex, setFocusedIndex] = useState<number | null>(null);
+  // const [focusedIndex, setFocusedIndex] = useState<number | null>(null);
 
   return (
     <div
@@ -31,13 +30,12 @@ export default function EditableRecentSearches({
       {searches?.length > 0 ? (
         <div className="space-y-3">
           {searches?.map((search, index) => {
-            const isFocused = focusedIndex === index;
 
             return (
               <div
                 key={index}
                 tabIndex={0} // Makes it focusable with TV remote
-                onFocus={() => setFocusedIndex(index)}
+                // onFocus={() => setFocusedIndex(index)}
                 className={cn(
                   "flex items-center justify-between gap-4 outline-none transition-allp-3"
                 )}
