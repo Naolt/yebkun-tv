@@ -1,6 +1,6 @@
 "use client";
 
-import { useState } from "react";
+import { useState, useRef, useEffect } from "react";
 import KeyboardComponent from "../component/gerandin/keyboard";
 import ContentSection from "../component/gerandin/content-section";
 import RecentSearches from "../component/gerandin/recent-searches";
@@ -9,7 +9,7 @@ import { useSearchContext } from "@/context/SearchContext";
 
 export default function SearchPage() {
   const {
-    // searchQuery,
+    searchQuery,
     setSearchQuery,
     recentSearches,
     handleSearch,
@@ -37,7 +37,6 @@ export default function SearchPage() {
 
   const handleRecentSearchClick = (query: string) => {
     setSearchQuery(query);
-    setActiveSection("search")
     // handleSearch(); // Optional
   };
 
