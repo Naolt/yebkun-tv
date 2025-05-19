@@ -14,9 +14,9 @@ type RecentSearchesProps = {
 
 export default function RecentSearches({
   searches,
-  // onSearchClick,
+  onSearchClick,
   onRemoveSearch,
-  // onClearAll,
+  onClearAll,
   isActive,
 }: RecentSearchesProps) {
   const [focusedIndex, setFocusedIndex] = useState<number | null>(null);
