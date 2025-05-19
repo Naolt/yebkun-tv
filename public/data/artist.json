@@ -1,0 +1,27 @@
+[
+  {
+    "id":1,
+    "name": "Rojava",
+    "image": "/adult/image/artist/Rojava.png"
+  },
+  {
+    "id":2,
+    "name": "Basur",
+    "image": "/adult/image/artist/Basur.png"
+  },
+  {
+    "id":3,
+    "name": "Bakür",
+    "image": "/adult/image/artist/bakur.png"
+  },
+  {
+    "id":4,
+    "name": "Rojhilat",
+    "image": "/adult/image/artist/Rojhilat.png"
+  },
+  {
+    "id":5,
+    "name": "Abbasi",
+    "image": "/adult/image/artist/Abbasi.png"
+  }
+]
