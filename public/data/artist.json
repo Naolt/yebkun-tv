@@ -1,27 +1,194 @@
 [
   {
-    "id":1,
-    "name": "Rojava",
-    "image": "/adult/image/artist/Rojava.png"
+    "id": 1,
+    "name": "Şivan Perwer",
+    "image": "/adult/image/artist/bakur.png",
+    "playlists": [
+      {
+        "id": 101,
+        "title": "Best of Şivan",
+        "songCount": 3,
+        "duration": "11:46",
+        "thumbnail": "/adult/image/music_thumbnail/music_thumbnail.png",
+        "songs": [
+          {
+            "id": 1,
+            "name": "Freedom Chant",
+            "thumbnail": "/adult/image/music_thumbnail/music_thumbnail.png",
+            "mp3": "/adult/music/track_001.mp3",
+            "artist": "Rojava",
+            "duration":146
+          },
+          {
+            "id": 2,
+            "name": "Mountains Echo",
+            "thumbnail": "/adult/image/music_thumbnail/music_thumbnail.png",
+            "mp3": "/adult/music/track_002.mp3",
+            "artist": "Basur",
+            "duration":146
+          },
+          {
+            "id": 3,
+            "name": "Kurdish Spirit",
+            "thumbnail": "/adult/image/music_thumbnail/music_thumbnail.png",
+            "mp3": "/adult/music/track_003.mp3",
+            "artist": "Bakür",
+            "duration":146
+          }
+        ]
+      }
+    ]
   },
   {
-    "id":2,
-    "name": "Basur",
-    "image": "/adult/image/artist/Basur.png"
+    "id": 2,
+    "name": "Karapetê Xaço",
+    "image": "/adult/image/artist/Rojhilat.png",
+    "playlists": [
+      {
+        "id": 102,
+        "title": "Traditional Echoes",
+        "songCount": 2,
+        "duration": "7:20",
+        "thumbnail": "/adult/image/music_thumbnail/music_thumbnail.png",
+        "songs": [
+          {
+            "id": 4,
+            "name": "Mystic Winds",
+            "thumbnail": "/adult/image/music_thumbnail/music_thumbnail.png",
+            "mp3": "/adult/music/track_004.mp3",
+            "artist": "Rojhilatt",
+            "duration":146
+          },
+          {
+            "id": 5,
+            "name": "Legacy",
+            "thumbnail": "/adult/image/music_thumbnail/music_thumbnail.png",
+            "mp3": "/adult/music/track_004.mp3",
+            "artist": "Abbasi",
+            "duration":146
+          }
+        ]
+      }
+    ]
   },
   {
-    "id":3,
-    "name": "Bakür",
-    "image": "/adult/image/artist/bakur.png"
+    "id": 3,
+    "name": "Ciwan Haco",
+    "image": "/adult/image/artist/Abbasi.png",
+    "playlists": [
+      {
+        "id": 103,
+        "title": "Modern Melodies",
+        "songCount": 3,
+        "duration": "11:46",
+        "thumbnail": "/adult/image/music_thumbnail/music_thumbnail.png",
+        "songs": [
+          {
+            "id": 1,
+            "name": "Freedom Chant",
+            "thumbnail": "/adult/image/music_thumbnail/music_thumbnail.png",
+            "mp3": "/adult/music/track_001.mp3",
+            "artist": "Rojava",
+            "duration":146
+          },
+          {
+            "id": 2,
+            "name": "Mountains Echo",
+            "thumbnail": "/adult/image/music_thumbnail/music_thumbnail.png",
+            "mp3": "/adult/music/track_002.mp3",
+            "artist": "Basur",
+            "duration":146
+          },
+          {
+            "id": 5,
+            "name": "Legacy",
+            "thumbnail": "/adult/image/music_thumbnail/music_thumbnail.png",
+            "mp3": "/adult/music/track_004.mp3",
+            "artist": "Abbasi",
+            "duration":146
+          }
+        ]
+      }
+    ]
   },
   {
-    "id":4,
-    "name": "Rojhilat",
-    "image": "/adult/image/artist/Rojhilat.png"
+    "id": 4,
+    "name": "Ciwan Haco",
+    "image": "/adult/image/artist/Abbasi.png",
+    "playlists": [
+      {
+        "id": 103,
+        "title": "Modern Melodies",
+        "songCount": 3,
+        "duration": "11:46",
+        "thumbnail": "/adult/image/music_thumbnail/music_thumbnail.png",
+        "songs": [
+          {
+            "id": 1,
+            "name": "Freedom Chant",
+            "thumbnail": "/adult/image/music_thumbnail/music_thumbnail.png",
+            "mp3": "/adult/music/track_001.mp3",
+            "artist": "Rojava",
+            "duration":146
+          },
+          {
+            "id": 2,
+            "name": "Mountains Echo",
+            "thumbnail": "/adult/image/music_thumbnail/music_thumbnail.png",
+            "mp3": "/adult/music/track_002.mp3",
+            "artist": "Basur",
+            "duration":146
+          },
+          {
+            "id": 5,
+            "name": "Legacy",
+            "thumbnail": "/adult/image/music_thumbnail/music_thumbnail.png",
+            "mp3": "/adult/music/track_004.mp3",
+            "artist": "Abbasi",
+            "duration":146
+          }
+        ]
+      }
+    ]
   },
   {
-    "id":5,
-    "name": "Abbasi",
-    "image": "/adult/image/artist/Abbasi.png"
+    "id": 5,
+    "name": "Ciwan Haco",
+    "image": "/adult/image/artist/Abbasi.png",
+    "playlists": [
+      {
+        "id": 103,
+        "title": "Modern Melodies",
+        "songCount": 3,
+        "duration": "11:46",
+        "thumbnail": "/adult/image/music_thumbnail/music_thumbnail.png",
+        "songs": [
+          {
+            "id": 1,
+            "name": "Freedom Chant",
+            "thumbnail": "/adult/image/music_thumbnail/music_thumbnail.png",
+            "mp3": "/adult/music/track_001.mp3",
+            "artist": "Rojava",
+            "duration":146
+          },
+          {
+            "id": 2,
+            "name": "Mountains Echo",
+            "thumbnail": "/adult/image/music_thumbnail/music_thumbnail.png",
+            "mp3": "/adult/music/track_002.mp3",
+            "artist": "Basur",
+            "duration":146
+          },
+          {
+            "id": 5,
+            "name": "Legacy",
+            "thumbnail": "/adult/image/music_thumbnail/music_thumbnail.png",
+            "mp3": "/adult/music/track_004.mp3",
+            "artist": "Abbasi",
+            "duration":146
+          }
+        ]
+      }
+    ]
   }
 ]

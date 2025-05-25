@@ -3,6 +3,7 @@
 import Navigation from "@/components/ui/navigation";
 import { SearchProvider, useSearchContext } from "@/context/SearchContext";
 
+
 export default function AdultLayout({
   children,
 }: {
