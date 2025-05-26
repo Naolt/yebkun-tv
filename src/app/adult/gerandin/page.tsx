@@ -2,10 +2,11 @@
 
 import { useState } from "react";
 import KeyboardComponent from "../component/gerandin/keyboard";
-import ContentSection from "../component/gerandin/content-section";
 import RecentSearches from "../component/gerandin/recent-searches";
 import EditableRecentSearches from "../component/gerandin/editable-recent";
 import { useSearchContext } from "@/context/SearchContext";
+import SongSection from "../component/music/MusicList";
+import ArtistSection from "../component/music/artistsList";
 
 export default function SearchPage() {
   const {
@@ -37,7 +38,7 @@ export default function SearchPage() {
 
   const handleRecentSearchClick = (query: string) => {
     setSearchQuery(query);
-    setActiveSection("search")
+    setActiveSection("search");
     // handleSearch(); // Optional
   };
 
@@ -68,7 +69,9 @@ export default function SearchPage() {
             </div>
           </div>
 
-          <ContentSection isActive={activeSection === "content"} />
+          <SongSection />
+          <ArtistSection />
+
         </div>
       </div>
     </div>

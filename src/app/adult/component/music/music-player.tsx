@@ -1,218 +1,301 @@
-// "use client"
+"use client";
 
-// import { useEffect, useRef, useState } from "react"
-// import { SkipBack, Play, SkipForward, Pause } from "lucide-react"
-// import AudioVisualizer from "./audio-visualizer"
-// import Image from "next/image"
+import { useEffect, useRef, useState, useCallback } from "react";
+import { SkipBack, Play, SkipForward, Pause } from "lucide-react";
+import AudioVisualizer from "./audio-visualizer";
+// import Image from "next/image";
+import { Slider } from "@/components/ui/slider";
 
-// interface Song {
-//   id: number
-//   title: string
-//   artist: string
-//   duration: number
-//   src: string
-// }
-// declare global {
-//   interface Window {
-//     webkitAudioContext?: typeof AudioContext
-//   }
-// }
+interface Song {
+  id: number;
+  name: string;
+  artist: string;
+  mp3: string;
+  thumbnail: string;
+  duration: number;
+}
 
-// const sampleSongs: Song[] = [
-//   { id: 1, title: "Sample Song 1", artist: "Artist Name", duration: 187, src: "/adult/music/track_004.mp3" },
-//   { id: 2, title: "Sample Song 2", artist: "Artist Name", duration: 212, src: "/adult/music/track_002.mp3" },
-//   { id: 3, title: "Sample Song 3", artist: "Artist Name", duration: 195, src: "/adult/music/track_003.mp3" },
-// ]
+interface MusicPlayerProps {
+  songs: Song[];
+  initialIndex: number;
+}
 
-// export default function MusicPlayer() {
-//   const [currentSongIndex, setCurrentSongIndex] = useState(0)
-//   const [isPlaying, setIsPlaying] = useState(false)
-//   const [duration, setDuration] = useState(0)
-//   const [currentTime, setCurrentTime] = useState(0)
-//   const [audioData, setAudioData] = useState<Uint8Array | null>(null)
+export default function MusicPlayer({ songs, initialIndex }: MusicPlayerProps) {
+  const [currentSongIndex, setCurrentSongIndex] = useState(initialIndex);
+  const [isPlaying, setIsPlaying] = useState(false);
+  const [duration, setDuration] = useState(0);
+  const [currentTime, setCurrentTime] = useState(0);
+  // const [volume, setVolume] = useState([75]);
+  const [audioData, setAudioData] = useState<Uint8Array | null>(null);
+  const [isLoading, setIsLoading] = useState(true);
 
-//   const audioRef = useRef<HTMLAudioElement | null>(null)
-//   const contextRef = useRef<AudioContext | null>(null)
-//   const analyserRef = useRef<AnalyserNode | null>(null)
-//   const animationRef = useRef<number | null>(null)
-//   const progressBarRef = useRef<HTMLDivElement | null>(null)
+  const audioRef = useRef<HTMLAudioElement | null>(null);
+  const contextRef = useRef<AudioContext | null>(null);
+  const analyserRef = useRef<AnalyserNode | null>(null);
+  const sourceRef = useRef<MediaElementAudioSourceNode | null>(null);
+  const animationRef = useRef<number | null>(null);
 
-//   const currentSong = sampleSongs[currentSongIndex]
+  const currentSong = songs[currentSongIndex];
 
-//   // One-time audio context + analyser setup
-//   useEffect(() => {
-//     const audio = audioRef.current
-//     if (!audio) return
+  // Initialize audio context
+  const initializeAudioContext = useCallback(async () => {
+    if (!audioRef.current || contextRef.current) return;
 
-//     const context = new (window.AudioContext)()
-//     const analyser = context.createAnalyser()
-//     analyser.fftSize = 512
-//     analyser.smoothingTimeConstant = 0.5
+    try {
+      const AudioContextClass = window.AudioContext;
+      const context = new AudioContextClass();
+      const analyser = context.createAnalyser();
 
-//     const source = context.createMediaElementSource(audio)
-//     source.connect(analyser)
-//     analyser.connect(context.destination)
+      analyser.fftSize = 512;
+      analyser.smoothingTimeConstant = 0.8;
 
-//     contextRef.current = context
-//     analyserRef.current = analyser
-//     setAudioData(new Uint8Array(analyser.frequencyBinCount))
+      const source = context.createMediaElementSource(audioRef.current);
+      source.connect(analyser);
+      analyser.connect(context.destination);
 
-//     return () => {
-//       if (context.state !== "closed") context.close()
-//     }
-//   }, [])
+      contextRef.current = context;
+      analyserRef.current = analyser;
+      sourceRef.current = source;
 
-//   // Handle song metadata load
-//   useEffect(() => {
-//     const audio = audioRef.current
-//     if (!audio) return
+      setAudioData(new Uint8Array(analyser.frequencyBinCount));
+    } catch (error) {
+      console.error("Failed to initialize audio context:", error);
+    }
+  }, []);
 
-//     const handleLoadedMetadata = () => {
-//       setDuration(audio.duration)
-//     }
+  // Update song index when initialIndex changes
+  useEffect(() => {
+    setCurrentSongIndex(initialIndex);
+    setCurrentTime(0);
+    setIsLoading(true);
+  }, [initialIndex]);
 
-//     audio.addEventListener("loadedmetadata", handleLoadedMetadata)
-//     return () => audio.removeEventListener("loadedmetadata", handleLoadedMetadata)
-//   }, [currentSongIndex])
+  // Handle song change
+  useEffect(() => {
+    const audio = audioRef.current;
+    if (!audio) return;
 
-//   // Handle time update
-//   useEffect(() => {
-//     const audio = audioRef.current
-//     if (!audio) return
+    setIsLoading(true);
+    setCurrentTime(0);
 
-//     const updateTime = () => setCurrentTime(audio.currentTime)
-//     audio.addEventListener("timeupdate", updateTime)
-//     return () => audio.removeEventListener("timeupdate", updateTime)
-//   }, [])
+    const handleCanPlay = () => {
+      setIsLoading(false);
+      if (isPlaying) {
+        audio.play().catch(console.error);
+      }
+    };
 
-//   // Handle end of song
-//   useEffect(() => {
-//     const audio = audioRef.current
-//     if (!audio) return
+    const handleLoadedMetadata = () => {
+      setDuration(audio.duration || 0);
+    };
 
-//     const handleEnded = () => playNext()
-//     audio.addEventListener("ended", handleEnded)
-//     return () => audio.removeEventListener("ended", handleEnded)
-//   }, [currentSongIndex])
+    const handleTimeUpdate = () => {
+      setCurrentTime(audio.currentTime);
+    };
 
-//   // Play/pause handling
-//   useEffect(() => {
-//     const audio = audioRef.current
-//     if (!audio || !contextRef.current) return
+    const handleEnded = () => {
+      playNext();
+    };
 
-//     if (isPlaying) {
-//       contextRef.current.resume()
-//       audio.play()
-//       startVisualizer()
-//     } else {
-//       audio.pause()
-//       stopVisualizer()
-//     }
-//   }, [isPlaying])
+    const handleError = (e: Event) => {
+      console.error("Audio error:", e);
+      setIsLoading(false);
+    };
 
-//   const startVisualizer = () => {
-//     const analyser = analyserRef.current
-//     if (!analyser) return
+    audio.addEventListener("canplay", handleCanPlay);
+    audio.addEventListener("loadedmetadata", handleLoadedMetadata);
+    audio.addEventListener("timeupdate", handleTimeUpdate);
+    audio.addEventListener("ended", handleEnded);
+    audio.addEventListener("error", handleError);
 
-//     const buffer = new Uint8Array(analyser.frequencyBinCount)
+    // Load the new song
+    audio.load();
 
-//     const update = () => {
-//       analyser.getByteTimeDomainData(buffer)
-//       setAudioData(new Uint8Array(buffer))
-//       animationRef.current = requestAnimationFrame(update)
-//     }
+    return () => {
+      audio.removeEventListener("canplay", handleCanPlay);
+      audio.removeEventListener("loadedmetadata", handleLoadedMetadata);
+      audio.removeEventListener("timeupdate", handleTimeUpdate);
+      audio.removeEventListener("ended", handleEnded);
+      audio.removeEventListener("error", handleError);
+    };
+  }, [currentSongIndex, currentSong.mp3]);
 
-//     animationRef.current = requestAnimationFrame(update)
-//   }
+  // Handle play/pause
+  useEffect(() => {
+    const audio = audioRef.current;
+    if (!audio || isLoading) return;
 
-//   const stopVisualizer = () => {
-//     if (animationRef.current) {
-//       cancelAnimationFrame(animationRef.current)
-//       animationRef.current = null
-//     }
-//   }
+    if (isPlaying) {
+      // Initialize audio context on first play (user interaction required)
+      if (!contextRef.current) {
+        initializeAudioContext();
+      }
 
-//   const togglePlayPause = () => setIsPlaying((prev) => !prev)
+      if (contextRef.current?.state === "suspended") {
+        contextRef.current.resume();
+      }
 
-//   const playNext = () => {
-//     setCurrentSongIndex((i) => (i + 1) % sampleSongs.length)
-//     setCurrentTime(0)
-//   }
+      audio.play().catch(console.error);
+      startVisualizer();
+    } else {
+      audio.pause();
+      stopVisualizer();
+    }
+  }, [isPlaying, isLoading, initializeAudioContext]);
 
-//   const playPrevious = () => {
-//     setCurrentSongIndex((i) => (i - 1 + sampleSongs.length) % sampleSongs.length)
-//     setCurrentTime(0)
-//   }
+  // // Handle volume changes
+  // useEffect(() => {
+  //   if (audioRef.current) {
+  //     audioRef.current.volume = volume[0] / 100;
+  //   }
+  // }, [volume]);
 
-//   const handleProgressBarClick = (e: React.MouseEvent<HTMLDivElement>) => {
-//     if (!audioRef.current || !progressBarRef.current) return
+  const startVisualizer = useCallback(() => {
+    if (!analyserRef.current || animationRef.current) return;
 
-//     const rect = progressBarRef.current.getBoundingClientRect()
-//     const percent = (e.clientX - rect.left) / rect.width
-//     const newTime = percent * duration
+    const bufferLength = analyserRef.current.frequencyBinCount;
+    const dataArray = new Uint8Array(bufferLength);
 
-//     audioRef.current.currentTime = newTime
-//     setCurrentTime(newTime)
-//   }
+    const updateVisualizer = () => {
+      if (!analyserRef.current) return;
 
-//   const formatTime = (time: number) => {
-//     const min = Math.floor(time / 60)
-//     const sec = Math.floor(time % 60)
-//     return `${min.toString().padStart(2, "0")}:${sec.toString().padStart(2, "0")}`
-//   }
+      analyserRef.current.getByteFrequencyData(dataArray);
+      setAudioData(new Uint8Array(dataArray));
+      animationRef.current = requestAnimationFrame(updateVisualizer);
+    };
 
-//   return (
-//     <div className="w-1/2 h-4/5 max-w-3xl aspect-video bg-[rgba(103, 101, 113, 0.34)] rounded-lg overflow-hidden relative">
-//       {/* Background */}
-//       <div className="absolute inset-0 z-0">
-//         <div className="absolute inset-0 bg-gradient-to-b from-transparent to-black/80 z-10" />
-//         <Image src={"/music-background.png"} alt={"Background"} className="w-full h-full object-cover opacity-50" fill />
-//       </div>
+    animationRef.current = requestAnimationFrame(updateVisualizer);
+  }, []);
 
-//       {/* Audio Element */}
-//       <audio ref={audioRef} src={currentSong.src} preload="metadata" />
+  const stopVisualizer = useCallback(() => {
+    if (animationRef.current) {
+      cancelAnimationFrame(animationRef.current);
+      animationRef.current = null;
+    }
+  }, []);
 
-//       {/* UI */}
-//       <div className="relative z-10 flex flex-col justify-between h-full p-6">
-//         {/* Song Info */}
-//         <div className="mb-4">
-//           <h2 className="text-white text-2xl font-bold">{currentSong.title}</h2>
-//           <p className="text-gray-300">{currentSong.artist}</p>
-//         </div>
+  const togglePlayPause = () => {
+    setIsPlaying(!isPlaying);
+  };
 
-//         {/* Visualizer */}
-//         <div className="flex-grow flex items-center justify-center">
-//           <AudioVisualizer audioData={audioData} isPlaying={isPlaying} />
-//         </div>
+  const playNext = () => {
+    const nextIndex = (currentSongIndex + 1) % songs.length;
+    setCurrentSongIndex(nextIndex);
+  };
 
-//         {/* Controls */}
-//         <div className="mt-auto">
-//           <div className="flex justify-center gap-6 mb-4">
-//             <button onClick={playPrevious} className="w-12 h-12 rounded-full bg-black/60 text-white flex items-center justify-center hover:bg-black/80">
-//               <SkipBack size={20} />
-//             </button>
-//             <button onClick={togglePlayPause} className="w-12 h-12 rounded-full bg-black/60 text-white flex items-center justify-center hover:bg-black/80">
-//               {isPlaying ? <Pause size={20} /> : <Play size={20} />}
-//             </button>
-//             <button onClick={playNext} className="w-12 h-12 rounded-full bg-black/60 text-white flex items-center justify-center hover:bg-black/80">
-//               <SkipForward size={20} />
-//             </button>
-//           </div>
+  const playPrevious = () => {
+    const prevIndex = (currentSongIndex - 1 + songs.length) % songs.length;
+    setCurrentSongIndex(prevIndex);
+  };
 
-//           {/* Progress Bar */}
-//           <div ref={progressBarRef} onClick={handleProgressBarClick} className="h-1 bg-gray-700 rounded-full cursor-pointer mb-2">
-//             <div className="h-full bg-red-600 rounded-full relative" style={{ width: `${(currentTime / duration) * 100}%` }}>
-//               <div className="absolute right-0 top-1/2 transform -translate-y-1/2 w-3 h-3 bg-white rounded-full" />
-//             </div>
-//           </div>
+  const handleSeek = (value: number[]) => {
+    const audio = audioRef.current;
+    if (audio && duration) {
+      const newTime = (value[0] / 100) * duration;
+      audio.currentTime = newTime;
+      setCurrentTime(newTime);
+    }
+  };
 
-//           {/* Time */}
-//           <div className="flex justify-between text-gray-400 text-sm">
-//             <span>{formatTime(currentTime)}</span>
-//             <span>{formatTime(duration)}</span>
-//           </div>
-//         </div>
-//       </div>
-//     </div>
-//   )
-// }
+  const formatTime = (time: number) => {
+    if (!time || !isFinite(time)) return "0:00";
+    const minutes = Math.floor(time / 60);
+    const seconds = Math.floor(time % 60);
+    return `${minutes}:${seconds.toString().padStart(2, "0")}`;
+  };
+
+  // Cleanup on unmount
+  useEffect(() => {
+    return () => {
+      stopVisualizer();
+      if (contextRef.current && contextRef.current.state !== "closed") {
+        contextRef.current.close();
+      }
+    };
+  }, [stopVisualizer]);
+
+  return (
+    <div className="bg-[#252525] z-10 bg-opacity-65 rounded-2xl h-full overflow-hidden relative">
+
+      {/* Audio Element */}
+      <audio
+        ref={audioRef}
+        src={currentSong.mp3}
+        preload="metadata"
+        crossOrigin="anonymous"
+      />
+
+      {/* Content */}
+      <div className="relative z-10 flex flex-col h-full p-6">
+        {/* Song Info */}
+        <div className="mb-6">
+          <h1 className="text-white text-2xl font-bold mb-2 truncate">
+            {currentSong.name}
+          </h1>
+          <p className="text-gray-300 text-lg truncate">{currentSong.artist}</p>
+          {isLoading && (
+            <p className="text-gray-400 text-sm mt-1">Loading...</p>
+          )}
+        </div>
+
+        {/* Visualizer */}
+        <div className="flex-1 flex items-center justify-center mb-6">
+          <AudioVisualizer
+            audioData={audioData}
+            isPlaying={isPlaying && !isLoading}
+          />
+        </div>
+
+        {/* Controls */}
+        <div className="space-y-4">
+          {/* Playback Controls */}
+          <div className="flex items-center justify-center gap-4">
+            <button
+              onClick={playPrevious}
+              className="w-12 h-12 rounded-full bg-white/10 hover:bg-white/20 text-white flex items-center justify-center transition-colors"
+              disabled={isLoading}
+            >
+              <SkipBack size={20} />
+            </button>
+
+            <button
+              onClick={togglePlayPause}
+              className="w-16 h-16 rounded-full bg-white/20 hover:bg-white/30 text-white flex items-center justify-center transition-colors"
+              disabled={isLoading}
+            >
+              {isPlaying ? (
+                <Pause size={24} />
+              ) : (
+                <Play size={24} className="ml-1" />
+              )}
+            </button>
+
+            <button
+              onClick={playNext}
+              className="w-12 h-12 rounded-full bg-white/10 hover:bg-white/20 text-white flex items-center justify-center transition-colors"
+              disabled={isLoading}
+            >
+              <SkipForward size={20} />
+            </button>
+          </div>
+
+          {/* Progress Bar */}
+          <div className="space-y-2">
+            <Slider
+              value={[duration ? (currentTime / duration) * 100 : 0]}
+              max={100}
+              step={0.1}
+              onValueChange={handleSeek}
+              disabled={isLoading}
+            />
+
+            <div className="flex justify-between text-gray-400 text-sm">
+              <span>{formatTime(currentTime)}</span>
+              <span>{formatTime(duration)}</span>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  );
+}
